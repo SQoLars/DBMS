@@ -25,6 +25,13 @@
 #include "libraries/parse/misc_parse.h"
 #include <iostream>
 
+class idk {
+public:
+	float index;
+	int a;
+	std::string z;
+};
+
 //=============== MAIN BLOCK ===============
 int main(
 	int argc,
@@ -33,6 +40,9 @@ int main(
 	Files::File* commands = Args::setArgs(argc, argv);
 
 	//=============== TESTING BLOCK ===============	
-	
+	for (int i(0); i< argc-1; i++) {
+
+		std::cout << commands[i].getName() << " " << commands[i].getState() << "\n";
+	}
 
 }

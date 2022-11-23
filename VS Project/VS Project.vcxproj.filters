@@ -27,10 +27,17 @@
     <ClInclude Include="Files\libraries\QOL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Files\libraries\exceptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Files\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Files\input\in1.txt" />
+    <Text Include="Files\config\files_cfg.txt" />
   </ItemGroup>
 </Project>

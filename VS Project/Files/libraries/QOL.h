@@ -2,6 +2,6 @@
 #include <string>
 
 namespace consts {
-	const std::string path = "./";
+	const std::string inputpath = "./input/";
 	const std::string unk = "unknown";
 }
