@@ -30,9 +30,13 @@ int main(
 	int argc,
 	char *argv[])
 {
-	Files::File* commands = Args::setArgs(argc, argv);
+	Files::InputFile InputFiles;
+	InputFiles.setArgs(argc, argv);
 
 	//=============== TESTING BLOCK ===============	
-	
+	for (int i(0); i< argc-1; i++) {
+
+		std::cout << InputFiles.getArg(i).getName() << " " << InputFiles.getArg(i).getState() << "\n";
+	}
 
 }
