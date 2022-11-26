@@ -25,24 +25,18 @@
 #include "libraries/parse/misc_parse.h"
 #include <iostream>
 
-class idk {
-public:
-	float index;
-	int a;
-	std::string z;
-};
-
 //=============== MAIN BLOCK ===============
 int main(
 	int argc,
 	char *argv[])
 {
-	Files::File* commands = Args::setArgs(argc, argv);
+	Files::InputFile InputFiles;
+	InputFiles.setArgs(argc, argv);
 
 	//=============== TESTING BLOCK ===============	
 	for (int i(0); i< argc-1; i++) {
 
-		std::cout << commands[i].getName() << " " << commands[i].getState() << "\n";
+		std::cout << InputFiles.getArg(i).getName() << " " << InputFiles.getArg(i).getState() << "\n";
 	}
 
 }
