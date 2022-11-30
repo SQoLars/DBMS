@@ -1,13 +1,16 @@
 #pragma once
-
+#define STRINGIFY(x) #x
+#define EXPAND(x) STRINGIFY(x)
 #include "../QOL.h"
 #include <string>
 #include <fstream>
 #include "../exceptions.h"
 #include <iostream>
+#include "../dirent.h" // ==== downloaded library ====
 
 namespace Files {
-	class File {	
+
+	class File {
 	private:
 		std::string name;
 		int state;
@@ -23,7 +26,7 @@ namespace Files {
 			if (inputname != "") {
 				name = inputname;
 				state = inputstate;
-				this->open(name, state);
+				this->open(name, state, consts::inputpath);
 			}
 		}
 
@@ -33,7 +36,8 @@ namespace Files {
 			if (copy.name != "") {
 				name = copy.name;
 				state = copy.state;
-				this->open(copy.name, copy.state);
+				this->open(copy.name, copy.state, consts::inputpath);
+
 			}
 
 		}
@@ -55,9 +59,9 @@ namespace Files {
 			this->file.swap(copy.file);
 			return *this;
 		}
-
+		// TO CHANGE INPUTPATH
 	private:
-		void open(std::string inputname, int type) {
+		void open(std::string inputname, int type, std::string path) {
 			if (file) file.close();
 
 			switch (type / 10) {
@@ -66,15 +70,15 @@ namespace Files {
 				case 0:
 					break;
 				case 1:
-					file.open(consts::inputpath + inputname, std::ios::binary | std::ios::in);
+					file.open(path + inputname, std::ios::binary | std::ios::in);
 					if (!file) throw exc::file::filenotvalid(inputname);
 					break;
 				case 2:
-					file.open(consts::inputpath + inputname, std::ios::binary | std::ios::out);
+					file.open(path + inputname, std::ios::binary | std::ios::out);
 					if (!file) throw exc::file::filenotvalid(inputname);
 					break;
 				case 3:
-					file.open(consts::inputpath + inputname, std::ios::binary | std::ios::out | std::ios::app);
+					file.open(path + inputname, std::ios::binary | std::ios::out | std::ios::app);
 					if (!file) throw exc::file::filenotvalid(inputname);
 					break;
 				default:
@@ -87,15 +91,15 @@ namespace Files {
 				case 0:
 					break;
 				case 1:
-					file.open(consts::inputpath + inputname, std::ios::in);
+					file.open(path + inputname, std::ios::in);
 					//if (!file) throw exc::file::filenotvalid(inputname);
 					break;
 				case 2:
-					file.open(consts::inputpath + inputname, std::ios::out);
+					file.open(path + inputname, std::ios::out);
 					if (!file) throw exc::file::filenotvalid(inputname);
 					break;
 				case 3:
-					file.open(consts::inputpath + inputname, std::ios::out | std::ios::app);
+					file.open(path + inputname, std::ios::out | std::ios::app);
 					if (!file) throw exc::file::filenotvalid(inputname);
 					break;
 				default:
@@ -131,67 +135,117 @@ namespace Files {
 		) {
 			return state;
 		}
-		
+
 	};
 
 	class InputFile {
 	private:
-		File* _allfiles;
+		File* allfiles;
 		int noFiles;
 
 	public:
 		InputFile() {
-			_allfiles = nullptr;
+			allfiles = nullptr;
 			noFiles = 0;
 		}
 
 		InputFile(File& file) {
-			_allfiles = new File[1];
-			_allfiles[0] = file;
+			allfiles = new File[1];
+			allfiles[0] = file;
 			noFiles = 1;
 		}
 
-		void operator+=(File& file) {
-			if (noFiles > 0 && _allfiles != nullptr) {
+		void operator+=(const File& file) {
+			if (noFiles > 0 && allfiles != nullptr) {
 				File* temp = new File[noFiles];
 				for (int i(0); i < noFiles; i++) {
-					temp[i] = _allfiles[i];
+					temp[i] = allfiles[i];
 				}
-				delete[] _allfiles;
-				_allfiles = new File[++noFiles];
+				delete[] allfiles;
+				allfiles = new File[noFiles + 1];
 				for (int i(0); i < noFiles; i++) {
-					_allfiles[i] = temp[i];
+					allfiles[i] = temp[i];
 				}
-				_allfiles[noFiles - 1] = file;
+				delete[] temp;
+				allfiles[noFiles] = file;
+				noFiles++;
 			}
-			else if (noFiles == 0 && _allfiles == nullptr) {
-				_allfiles = new File[1];
-				_allfiles[0] = file;
-			}			
+			else if (noFiles == 0 && allfiles == nullptr) {
+				allfiles = new File[1];
+				allfiles[0] = file;
+				noFiles = 1;
+			}
+		}
+
+		File& operator[](int i) {
+			if (i < noFiles)
+				return allfiles[i];
 		}
 
 		File* getArgs() {
-			return _allfiles;
+			return allfiles;
 		}
 
 		File getArg(int i) {
-			return _allfiles[i];
+			return allfiles[i];
+		}
+
+		int getNoFiles() {
+			return noFiles;
 		}
 
 		void setArgs(
 			int argc,
 			char* argv[]
 		) {
-			if (_allfiles == nullptr) {
-				delete[] _allfiles;
+			if (allfiles != nullptr) {
+				delete[] allfiles;
 			}
-			_allfiles = new File[argc - 1];
-			noFiles = argc - 1;
-			for (int i(0); i < argc - 1; i++) {
-				_allfiles[i] = File((std::string)argv[i + 1], 21);
+			if (argc > 1) {
+				allfiles = new File[argc - 1];
+				noFiles = argc - 1;
+				for (int i(0); i < argc - 1; i++) {
+					allfiles[i] = File((std::string)argv[i + 1], 21);
+				}
+			}
+			else if (argc == 1) {
+				std::string s = getWinProjectPath();
+				s.append("Files\\\\input\\\\");
+				int i;
+				DIR* directory;
+				struct dirent* entry;
+				std::string x;
+				if ((directory = opendir(getWinProjectPath().append("Files\\input\\").c_str())) != NULL) {
+					while ((entry = readdir(directory)) != NULL) {
+						if (entry->d_type == DT_REG && ((x = entry->d_name) != "." || (x = entry->d_name) != "..")) {
+							*this += File(x, 21);
+						}
+					}
+				}
 			}
 
+
+		}
+	private:
+		inline std::string getProjectPath() {
+			std::string s = EXPAND(UNITTESTPRJ);
+			s.erase(0, 1); // erase the first quote
+			s.erase(s.size() - 2); // erase the last quote and the dot
+			return s;
+		}
+		inline std::string getWinProjectPath() {
+			std::string s = EXPAND(UNITTESTPRJ);
+			s.erase(0, 1); // erase the first quote
+			s.erase(s.size() - 2); // erase the last quote and the dot
+			for (int i(0); i < s.size(); i++) {
+				if (s[i] == '\\') {
+					s.insert(i++, "\\");
+				}
+			}
+			return s;
 		}
 
 	};
+
+
 }

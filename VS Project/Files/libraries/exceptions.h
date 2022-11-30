@@ -17,7 +17,7 @@ namespace exc {
 			std::string x;
 			x.append("Error in files.h Files::File -> file \"");
 			x.append(a);
-			x.append("\" not found or couldn't be open.");
+			x.append("\" was not found or could not be opened.");
 			return x;
 		}
 	};

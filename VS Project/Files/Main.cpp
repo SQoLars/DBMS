@@ -23,8 +23,10 @@
 //=============== INCLUDE BLOCK ===============
 #include "libraries/files/files.h"
 #include "libraries/parse/misc_parse.h"
+#include "libraries/parse/SQL_parse/SQL_parse.h"
 #include <iostream>
-
+#include <cstring>  
+using std::cout; using std::string; using std::endl;
 //=============== MAIN BLOCK ===============
 int main(
 	int argc,
@@ -32,11 +34,12 @@ int main(
 {
 	Files::InputFile InputFiles;
 	InputFiles.setArgs(argc, argv);
+	
+	//=============== TESTING BLOCK ===============
+	std::string test;
+	test = SQL::GetCommands(InputFiles[0]);
+	cout << test << endl;
 
-	//=============== TESTING BLOCK ===============	
-	for (int i(0); i< argc-1; i++) {
-
-		std::cout << InputFiles.getArg(i).getName() << " " << InputFiles.getArg(i).getState() << "\n";
-	}
-
+	//system("pause");
+	return 0;
 }
