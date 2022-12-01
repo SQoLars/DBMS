@@ -7,32 +7,28 @@
 #include "../misc_parse.h"
 
 namespace SQL {
-	std::string wholefilecontent;
-	std::string temp;
-	std::string GetCommands(Files::File fileobj) {
-		
-		while (!fileobj.getFile()->eof()) {
-			*fileobj.getFile() >> temp;
-			wholefilecontent.append(temp);
-			wholefilecontent.append(" ");
-		}
-		parse::RemoveByteOrderMarks(&wholefilecontent);
-		return wholefilecontent;
-	}
-
-
 	class Commands {
 	private:
 		std::string str;
 
 	public:
+		static std::string GetCommands(Files::File fileobj) {
+			std::string wholefilecontent;
+			std::string temp;
+			while (!fileobj.getFile()->eof()) {
+				*fileobj.getFile() >> temp;
+				wholefilecontent.append(temp);
+				wholefilecontent.append(" ");
+			}
+			parse::RemoveByteOrderMarks(&wholefilecontent);
+			return wholefilecontent;
+		}
+
 		Commands(std::string wholefilecontent) {
 			if (wholefilecontent.length() > 0)
 				str = wholefilecontent;
 		}
-		void GetCommands(Files::File file) {
 
-		}
 		void Parse() {
 			std::istringstream iss (str);
 			std::string command, value, temp;
@@ -56,7 +52,7 @@ namespace SQL {
 			
 		}
 
-		bool IsCommand(std::string word){
+		static bool IsCommand(std::string word){
 			std::string temp = word;
 			parse::ToUpper(&temp);
 			if (temp == "CREATE"

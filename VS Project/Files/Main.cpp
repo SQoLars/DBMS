@@ -37,7 +37,7 @@ int main(
 	
 	//=============== TESTING BLOCK ===============
 	std::string wholefilecontent;
-	wholefilecontent = SQL::GetCommands(InputFiles[0]);
+	wholefilecontent = SQL::Commands::GetCommands(InputFiles[0]);
 	SQL::Commands x(wholefilecontent);
 	x.Parse();
 
