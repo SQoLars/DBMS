@@ -36,9 +36,10 @@ int main(
 	InputFiles.setArgs(argc, argv);
 	
 	//=============== TESTING BLOCK ===============
-	std::string test;
-	test = SQL::GetCommands(InputFiles[0]);
-	cout << test << endl;
+	std::string wholefilecontent;
+	wholefilecontent = SQL::GetCommands(InputFiles[0]);
+	SQL::Commands x(wholefilecontent);
+	x.Parse();
 
 	//system("pause");
 	return 0;

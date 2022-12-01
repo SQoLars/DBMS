@@ -70,7 +70,7 @@ namespace Files {
 				case 0:
 					break;
 				case 1:
-					file.open(path + inputname, std::ios::binary | std::ios::in);
+					file.open(path + inputname, std::ios::binary | std::ios::in); 
 					if (!file) throw exc::file::filenotvalid(inputname);
 					break;
 				case 2:
@@ -111,6 +111,16 @@ namespace Files {
 				throw exc::type::typenotvalid(type);
 				break;
 			}
+		}
+
+		bool SkipBOM(std::istream& in)
+		{
+			char test[4] = { 0 };
+			in.read(test, 3);
+			if (strcmp(test, "\xEF\xBB\xBF") == 0)
+				return true;
+			in.seekg(0);
+			return false;
 		}
 	public:
 
@@ -246,6 +256,4 @@ namespace Files {
 		}
 
 	};
-
-
 }
