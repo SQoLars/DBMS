@@ -1,1 +1,2 @@
-salut!
+﻿CREATE TABLE students ((id, integer, 1000, 0), (nume, text, 128, ''), (grupa, text,50,'1000'))
+UPDATE nume_tabela SET nume_coloana = valoare WHERE nume_coloana = valoare
