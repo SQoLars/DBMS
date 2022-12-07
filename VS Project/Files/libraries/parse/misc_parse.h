@@ -26,6 +26,32 @@ namespace parse {
         }
     }
 
+    inline void replaceSpaces(std::string* str) {
+        for (int i(0); i < (*str).length(); i++) {
+            if((*str)[i]==' ')
+                (*str)[i] =  '_';
+        }
+    }
+
+    inline void replaceSpaces(std::string* str,int size) {
+        for (int i(0); i < size; i++) {
+            replaceSpaces((&str[i]));
+        }
+    }
+
+    inline void undoSpaces(std::string* str) {
+        for (int i(0); i < (*str).length(); i++) {
+            if ((*str)[i] == '_')
+                (*str)[i] = ' ';
+        }
+    }
+
+    inline void undoSpaces(std::string* str, int size) {
+        for (int i(0); i < size; i++) {
+            replaceSpaces((&str[i]));
+        }
+    }
+
     int checkByteOrderMarks(const std::string test) {
         if ((unsigned char)test[0] == 0xEF &&
             (unsigned char)test[1] == 0xBB &&

@@ -27,6 +27,8 @@ namespace SQL {
 		Commands(std::string wholefilecontent) {
 			if (wholefilecontent.length() > 0)
 				str = wholefilecontent;
+			else
+				cout << exc::parsing::emptyfile() << endl;
 		}
 
 		void Parse() {
@@ -36,7 +38,7 @@ namespace SQL {
 				while (!iss.eof()) {
 					iss >> temp;
 					if (IsCommand(temp) || iss.eof()) {
-						createCommand(value);
+						createCommand(value); //===============================================//
 						value.clear();
 						value.append(temp);
 						value.append(" ");
@@ -67,5 +69,68 @@ namespace SQL {
 			}
 			return false;
 		}
+	};
+
+	class SQLCommands {
+		static enum class Type {
+			NONE,
+			CREATE,
+			DROP,
+			DISPLAY,
+			INSERT,
+			SELECT,
+			DEL,
+			UPDATE
+		};
+		std::string commandatr;
+		Type type;
+		
+	public:
+		SQLCommands() {
+			commandatr = "";
+			type = Type::NONE;
+		}
+		SQLCommands(std::string value) {
+			commandatr = value;
+			std::istringstream iss(value);
+			std::string temp;
+			iss >> temp;
+			parse::ToUpper(&temp);
+			if (temp == "CREATE") { type = Type::CREATE; parseCREATE(); }
+			else if (temp == "DROP") { type = Type::DROP; parseDROP(); }
+			else if (temp == "DISPLAY") { type = Type::DISPLAY; parseDISPLAY(); }
+			else if (temp == "INSERT") { type = Type::INSERT; parseINSERT(); }
+			else if (temp == "SELECT") { type = Type::SELECT; parseSELECT(); }
+			else if (temp == "DELETE") { type = Type::DEL; parseDELETE(); }
+			else if (temp == "UPDATE") { type = Type::UPDATE; parseUPDATE(); }
+		}
+	private:
+		void parseCREATE() {
+			// to be continued
+		}
+		void parseDROP() {
+
+		}
+		void parseDISPLAY() {
+
+		}
+		void parseINSERT() {
+
+		}
+		void parseSELECT() {
+
+		}
+		void parseDELETE() {
+
+		}
+		void parseUPDATE() {
+
+		}
+	};
+}
+
+namespace SQLConsts {
+	const enum class datatypes {
+
 	};
 }

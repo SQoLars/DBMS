@@ -26,6 +26,8 @@
 #include "libraries/parse/SQL_parse/SQL_parse.h"
 #include <iostream>
 #include <cstring>  
+#include <string>
+#include <tgmath.h>
 using std::cout; using std::string; using std::endl;
 //=============== MAIN BLOCK ===============
 int main(
@@ -36,11 +38,20 @@ int main(
 	InputFiles.setArgs(argc, argv);
 	
 	//=============== TESTING BLOCK ===============
-	std::string wholefilecontent;
+	/*std::string wholefilecontent;
 	wholefilecontent = SQL::Commands::GetCommands(InputFiles[0]);
 	SQL::Commands x(wholefilecontent);
-	x.Parse();
+	x.Parse();*/
+
+	Database::Table tab("Employees");
+	string* test1 = new string[3]{ "First Name", "His Age", "E-mail" };
+	string* test2 = new string[3]{ "string", "int", "string" };
+	tab.Create(test1, test2, 3);
+
+
 
 	//system("pause");
 	return 0;
+
+
 }
